@@ -1,66 +1,58 @@
-import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
 
+/* TODO
+the actual blackjack engine
+polishing the input stuff
+well, many things
+*/
 
 public class GameEngine {
-    public static final String RED = "\u001B[31m";
-    public static final String RESET = "\u001B[0m";
+    private List<Participant> participants;
+    private Deck deck;
+    private HouseRules rules;
 
-    private List<Participant> participants; // i am using dummy values so these wont work
-    private Deck deck; // i am using dummy values so these wont work
-    private HouseRules rules; // i am using dummy values so these wont work
+    private int deck_amount;
+    private boolean dealerhit17;
+
+    Graphics GUI = new Graphics();
+    Input Input = new Input();
+
 
     public GameEngine() {
         participants = new ArrayList<>();
         deck = new Deck();
-        rules = new HouseRules();
+        rules = new HouseRules(4, false);
     }
 
 
     public void startGame() {
         mainMenu();
-
     }
 
 
-    public void playRound() {
+    public void playRound() { //t temp
         System.out.println("round is played!");
     }
 
-    public void resolveWinner() {
+    public void resolveWinner() { // temp
         System.out.println("the winner is you!");
     }
 
 
-    // private methods #####################################################################
+    // private methods ######################
 
-    private void mainMenu() {
+    private void mainMenu() { // this is the main menu
         int selection = 0;
 
         while (selection != -1) {
-            System.out.print("""
-                    
-                       Welcome to...
-                       _______  ______ _      ______ ___  __   _   _____  ____ _____ ______
-                      / ___/ / / / __ \\ | /| / / __ `/ / / /  | | / / _ \\/ __ `/ __ `/ ___/
-                     (__  ) /_/ / / / / |/ |/ / /_/ / /_/ /   | |/ /  __/ /_/ / /_/ (__  )\s
-                    /____/\\__,_/_/ /_/|__/|__/\\__,_/\\__, /    |___/\\___/\\__, /\\__,_/____/ \s
-                                                   /____/              /____/             \s
-                    """);
-            //https://patorjk.com/software/taag/#p=display&f=Slant&t=sunway+vegas&x=none&v=4&h=4&w=80&we=false
+        GUI.displayMainMenu();
+            selection = Input.readInt();
 
-            System.out.print("""
-                    Pick an option:
-                    1. Start game
-                    2. Modify house rules
-                    3. quit
-                    
-                    """);
-            selection = input();
             switch (selection) {
                 case 1:
                     System.out.println("case 1");
+                    Start();
                     break;
                 case 2:
                     System.out.println("case 2");
@@ -68,6 +60,10 @@ public class GameEngine {
                     break;
                 case 3:
                     System.out.println("case 3");
+                    helpMenu();
+                    break;
+                case 4:
+                    System.out.println("case 4");
                     selection = -1;
                     break;
                 default:
@@ -77,17 +73,12 @@ public class GameEngine {
         }
     }
 
-    private void optionsMenu() {
+    private void optionsMenu() { // this is the options menu
         int selection = 0;
         while (selection != -1) {
-            System.out.print("""
-                    Choose an option:
-                    1. Modify number of decks used
-                    2. Modify dealer hit on soft 17
-                    3. Go back
-                    
-                    """);
-            selection = input();
+            GUI.displayOptionsMenu();
+            selection = Input.readInt();
+
             switch (selection) {
                 case 1:
                     System.out.println("case 1");
@@ -99,49 +90,58 @@ public class GameEngine {
                     break;
                 case 3:
                     System.out.println("case 3");
+                    this.rules = new HouseRules(deck_amount, dealerhit17);
                     selection = -1;
                     break;
             }
         }
     }
 
-    private void deckAmount() {
-        int deck_amount = 0;
-        System.out.print("How many decks do you want?");
-        deck_amount = input();
-        System.out.println("Deck amount is now " + deck_amount);
+    private void helpMenu() { // all the help will be stored here
+        GUI.displayHelpMenu();
+        Input.promptEnter();
     }
 
-    private void dealerHit17() {
-        boolean dealerhit17;
+    private void deckAmount() { // this menu changes the deck amount house rule
+        GUI.displayDeckAmountMenu();
+        deck_amount = Input.readInt();
+        GUI.displayDeckAmountMenu(deck_amount);
+    }
+
+    private void dealerHit17() { // this menu changes whether the dealer hits on a soft 17 or not
         int selection;
-        System.out.print("""
-                Hit on soft 17?
-                1. Enable
-                2. Disable
-                """);
-        selection = input();
-        if (selection == 1) {
+        GUI.displayDealerHit17Menu();
+        selection = Input.readInt();
+        if (selection == 1) { // dealer will hit at soft 17
             //rules.isHitSoft17(true);
-            System.out.print("Dealer hit on soft 17 is now enabled");
-            dealerhit17 = true;
-        } else if (selection == 2) {
-            //rules.isHitSoft17(false);
-            System.out.print("Dealer hit on soft 17 is now disabled");
+            this.dealerhit17 = true;
+            GUI.displayDealerHit17Menu(dealerhit17);
 
-            dealerhit17 = false;
+        } else if (selection == 2) { // dealer will NOT hit at soft 17
+            //rules.isHitSoft17(false);
+            this.dealerhit17 = false;
+            GUI.displayDealerHit17Menu(dealerhit17);
+
         }
     }
 
-    private int input() {
-        Scanner player_input = new Scanner(System.in);
-        int selection = 0;
-        try {
-            selection = Integer.parseInt(player_input.nextLine());
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid input! Please enter a number.");
-        }
-        return selection;
+
+
+
+    private void Start() { // this is the actual gamplay loop
+        deck.initialize(rules.getNumberOfDecks());
+        deck.shuffle();
+
+        participants.clear();
+        participants.add(new Player(Input.readString()));
+        participants.add(new Dealer("Dealer"));
+
+        /*
+        note.
+        this will loop until player decides they dont want to play anymore
+         */
+
+
     }
 
 
