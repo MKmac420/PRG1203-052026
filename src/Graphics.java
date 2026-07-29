@@ -1,9 +1,10 @@
 public class Graphics {
 
-    /* TODO
-more gui stuff
-the card graphics
-*/
+    private final String SPADE = "♠";
+    private final String HEART = "♥";
+    private final String DIAMOND = "♦";
+    private final String CLUBS = "♣";
+
 
     public void displayMainMenu() {
         System.out.print("""
@@ -81,6 +82,23 @@ the card graphics
         else {
             System.out.println("Dealer hit on soft 17 is now disabled");
         }
+    }
+
+    public void playerNameInput() {
+        System.out.println("Enter your name (max 20 characters long):");
+    }
+
+
+
+    public String formatCard(String rank, String suit, boolean notHidden) {
+        if (notHidden) {
+            return String.format("[ %s %s ]", rank, suit);
+
+        }
+        else {
+            return ("[ ? ? ]");
+        }
+
     }
 
 
