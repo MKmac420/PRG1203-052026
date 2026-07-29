@@ -1,19 +1,19 @@
 import java.util.ArrayList;
 import java.util.List;
 
-/* TODO
-the actual blackjack engine
-polishing the input stuff
-well, many things
-*/
+/*
+EVERY SINGLE PRINT STATEMENT IN HERE IS FOR TESTING ONLY.
+ONLY GRAPHICS.JAVA CAN HANDLE OUTPUT
+ */
+
 
 public class GameEngine {
     private List<Participant> participants;
     private Deck deck;
     private HouseRules rules;
 
-    private int deck_amount;
-    private boolean dealerhit17;
+    private int deck_amount = 4; // default if user doesnt set
+    private boolean dealerhit17 = false; // also default
 
     Graphics GUI = new Graphics();
     Input Input = new Input();
@@ -31,22 +31,13 @@ public class GameEngine {
     }
 
 
-    public void playRound() { //t temp
-        System.out.println("round is played!");
-    }
-
-    public void resolveWinner() { // temp
-        System.out.println("the winner is you!");
-    }
-
-
     // private methods ######################
 
     private void mainMenu() { // this is the main menu
         int selection = 0;
 
         while (selection != -1) {
-        GUI.displayMainMenu();
+            GUI.displayMainMenu();
             selection = Input.readInt();
 
             switch (selection) {
@@ -125,22 +116,114 @@ public class GameEngine {
         }
     }
 
+    private void displayParticipantHand(Participant p) {
 
+
+    }
 
 
     private void Start() { // this is the actual gamplay loop
+        Boolean playing =  true;
+
+        participants.clear();
+
         deck.initialize(rules.getNumberOfDecks());
         deck.shuffle();
 
-        participants.clear();
+
+        GUI.playerNameInput();
         participants.add(new Player(Input.readString()));
-        participants.add(new Dealer("Dealer"));
+
+        participants.add(new Dealer("Dealer")); // dealer is always last
+
+
+        while (playing) {
+            playRound();
+
+            System.out.println("want to keep playing? 1.yes 2.no"); // temp
+            if (Input.readInt() == 2) {
+                playing = false;
+            }
+        }
+
+
+
+
 
         /*
         note.
         this will loop until player decides they dont want to play anymore
+
+        make a while loop to keep the game running
+
          */
 
+
+    }
+
+    public void playRound() { //t temp
+        if (deck.isEmpty()) {
+            deck.initialize(rules.getNumberOfDecks());
+            deck.shuffle();
+
+        }
+        for (Participant p : participants) {
+            p.reset();
+        }
+
+        for (int round = 0; round < 2; round++) {
+            for (Participant p : participants) {
+                Card card = deck.dealCard();
+
+                if (p.isDealer() && round == 1) {
+                    card.setHidden(true);
+                }
+
+                p.getHand().addCard(card);
+            }
+        }
+
+        for (Participant p : participants) {
+            p.playTurn(deck, rules);
+        }
+
+        resolveWinner(); // checks if anyone won or not
+
+    }
+
+    public void resolveWinner() { // temp
+        Participant dealer = participants.getLast(); // dealer is always last
+
+        for (Card card : dealer.getHand().getCards()) {
+            card.setHidden(false);
+        }
+
+        int dealerScore = dealer.getHand().getScore();
+        boolean dealerBusted = dealer.getHand().isBusted();
+
+        for (Participant p : participants) {
+            if (!p.isDealer()) {
+                int playerScore = p.getHand().getScore();
+                boolean playerBusted = p.getHand().isBusted();
+
+
+                if (playerBusted) {
+                    System.out.println("player lose bcs busted!");
+                }
+                else if (dealerBusted) {
+                    System.out.println("player win bcs dealer busted!");
+                }
+                else if (playerScore > dealerScore) {
+                    System.out.println("player win!");
+                }
+                else if (playerScore < dealerScore) {
+                    System.out.println("player lose!");
+                }
+                else {
+                    System.out.println("Tie bcs same score");
+                }
+            }
+        }
 
     }
 
