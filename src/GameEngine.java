@@ -38,7 +38,7 @@ public class GameEngine {
 
         while (selection != -1) {
             GUI.displayMainMenu();
-            selection = Input.readInt();
+            selection = Input.readInt(4);
 
             switch (selection) {
                 case 1:
@@ -68,7 +68,7 @@ public class GameEngine {
         int selection = 0;
         while (selection != -1) {
             GUI.displayOptionsMenu();
-            selection = Input.readInt();
+            selection = Input.readInt(3);
 
             switch (selection) {
                 case 1:
@@ -102,7 +102,7 @@ public class GameEngine {
     private void dealerHit17() { // this menu changes whether the dealer hits on a soft 17 or not
         int selection;
         GUI.displayDealerHit17Menu();
-        selection = Input.readInt();
+        selection = Input.readInt(2);
         if (selection == 1) { // dealer will hit at soft 17
             //rules.isHitSoft17(true);
             this.dealerhit17 = true;
@@ -117,8 +117,7 @@ public class GameEngine {
     }
 
     private void displayParticipantHand(Participant p) {
-
-
+        GUI.displayHand(p.getName(), p.getHand().getCards(), p.getHand().getScore());
     }
 
 
@@ -139,24 +138,12 @@ public class GameEngine {
 
         while (playing) {
             playRound();
+            GUI.keepPlaying();
 
-            System.out.println("want to keep playing? 1.yes 2.no"); // temp
-            if (Input.readInt() == 2) {
+            if (Input.readInt(2) == 2) {
                 playing = false;
             }
         }
-
-
-
-
-
-        /*
-        note.
-        this will loop until player decides they dont want to play anymore
-
-        make a while loop to keep the game running
-
-         */
 
 
     }
@@ -184,6 +171,10 @@ public class GameEngine {
         }
 
         for (Participant p : participants) {
+            displayParticipantHand(p);
+        }
+
+        for (Participant p : participants) {
             p.playTurn(deck, rules);
         }
 
@@ -197,6 +188,7 @@ public class GameEngine {
         for (Card card : dealer.getHand().getCards()) {
             card.setHidden(false);
         }
+        displayParticipantHand(dealer);
 
         int dealerScore = dealer.getHand().getScore();
         boolean dealerBusted = dealer.getHand().isBusted();
@@ -207,25 +199,8 @@ public class GameEngine {
                 boolean playerBusted = p.getHand().isBusted();
 
 
-                if (playerBusted) {
-                    System.out.println("player lose bcs busted!");
-                }
-                else if (dealerBusted) {
-                    System.out.println("player win bcs dealer busted!");
-                }
-                else if (playerScore > dealerScore) {
-                    System.out.println("player win!");
-                }
-                else if (playerScore < dealerScore) {
-                    System.out.println("player lose!");
-                }
-                else {
-                    System.out.println("Tie bcs same score");
-                }
+                GUI.declareWinner(playerScore, playerBusted, dealerScore, dealerBusted, p.getName());
             }
         }
-
     }
-
-
 }
