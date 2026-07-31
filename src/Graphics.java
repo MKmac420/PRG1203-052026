@@ -1,6 +1,8 @@
+import java.util.List;
+
 public class Graphics {
 
-    private final String SPADE = "♠";
+    private final String SPADES = "♠";
     private final String HEART = "♥";
     private final String DIAMOND = "♦";
     private final String CLUBS = "♣";
@@ -8,34 +10,38 @@ public class Graphics {
 
     public void displayMainMenu() {
         System.out.print("""
-                    
-                       Welcome to...
-                       _______  ______ _      ______ ___  __   _   _____  ____ _____ ______
-                      / ___/ / / / __ \\ | /| / / __ `/ / / /  | | / / _ \\/ __ `/ __ `/ ___/
-                     (__  ) /_/ / / / / |/ |/ / /_/ / /_/ /   | |/ /  __/ /_/ / /_/ (__  )\s
-                    /____/\\__,_/_/ /_/|__/|__/\\__,_/\\__, /    |___/\\___/\\__, /\\__,_/____/ \s
-                                                   /____/              /____/             \s
-                    """);
+                
+                   Welcome to...
+                   _______  ______ _      ______ ___  __   _   _____  ____ _____ ______
+                  / ___/ / / / __ \\ | /| / / __ `/ / / /  | | / / _ \\/ __ `/ __ `/ ___/
+                 (__  ) /_/ / / / / |/ |/ / /_/ / /_/ /   | |/ /  __/ /_/ / /_/ (__  )\s
+                /____/\\__,_/_/ /_/|__/|__/\\__,_/\\__, /    |___/\\___/\\__, /\\__,_/____/ \s
+                                               /____/              /____/             \s
+                """);
         //https://patorjk.com/software/taag/#p=display&f=Slant&t=sunway+vegas&x=none&v=4&h=4&w=80&we=false
 
         System.out.print("""
-                    Pick an option:
-                    1. Start game
-                    2. Modify house rules
-                    3. How to play
-                    4. quit
-                    
-                    """);
+                Pick an option:
+                1. Start game
+                2. Modify house rules
+                3. How to play
+                4. quit
+                
+                """);
+    }
+
+    public void keepPlaying() {
+        System.out.println("Do you want to keep playing?\n1. Yes\n2. No");
     }
 
     public void displayOptionsMenu() {
         System.out.print("""
-        Choose an option:
-        1. Modify number of decks used
-        2. Modify dealer hit on soft 17
-        3. Go back
-        
-        """);
+                Choose an option:
+                1. Modify number of decks used
+                2. Modify dealer hit on soft 17
+                3. Go back
+                
+                """);
     }
 
     public void displayHelpMenu() {
@@ -78,8 +84,7 @@ public class Graphics {
     public void displayDealerHit17Menu(boolean dealer_hit) {
         if (dealer_hit) {
             System.out.println("Dealer hit on soft 17 is now enabled");
-        }
-        else {
+        } else {
             System.out.println("Dealer hit on soft 17 is now disabled");
         }
     }
@@ -89,31 +94,72 @@ public class Graphics {
     }
 
 
-
     public String formatCard(String rank, String suit, boolean notHidden) {
         if (notHidden) {
-            return String.format("[ %s %s ]", rank, suit);
 
-        }
-        else {
+            String symbol = suit;
+
+            switch (suit) {
+                case "spades":
+                    symbol = SPADES;
+                    break;
+                case "heart":
+                    symbol = HEART;
+                    break;
+                case "diamond":
+                    symbol = DIAMOND;
+                    break;
+                case "clubs":
+                    symbol = CLUBS;
+                    break;
+            }
+
+            return String.format("[ %s %s ]", rank, symbol);
+
+        } else {
             return ("[ ? ? ]");
         }
 
     }
 
+    public void displayHand(String name, List<Card> cards, int score) {
+        boolean hasHiddenCards = false;
 
 
+        System.out.printf("%s's Hand: ", name);
 
+        for (Card card : cards) {
+            String cardVisual = formatCard(card.getRank(), card.getSuit(), !card.isHidden());
+            System.out.print(cardVisual + " ");
 
+            if (card.isHidden()) {
+                hasHiddenCards = true;
+            }
+        }
+        if (hasHiddenCards) {
+            System.out.println(" (Total: ?)");
+        } else System.out.printf(" (Total: %s)\n", score);
+    }
 
+    public void declareWinner(int playerScore, boolean playerBusted, int dealerScore, boolean dealerBusted, String playerName) {
 
+        if (playerBusted) {
+            System.out.printf("%s loses. (%s busted)\n", playerName, playerName);
+        }
+        else if (dealerBusted) {
+            System.out.printf("%s wins! (dealer busted)\n", playerName);
+        }
+        else if (playerScore > dealerScore) {
+            System.out.printf("%s wins! (%s's hand value is higher)\n", playerName, playerName);
+        }
+        else if (playerScore < dealerScore) {
+            System.out.printf("%s loses! (dealer's hand value is higher)\n", playerName);
+        }
+        else {
+            System.out.println("Tie! (hand value is equal)");
+        }
 
-
-
-
-
-
-
+    }
 
 
 }
