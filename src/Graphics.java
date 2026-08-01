@@ -2,10 +2,14 @@ import java.util.List;
 
 public class Graphics {
 
-    private final String SPADES = "♠";
-    private final String HEART = "♥";
-    private final String DIAMOND = "♦";
-    private final String CLUBS = "♣";
+    /*
+    The main goal of this class is to handle ALL console output
+     */
+
+    private static final String SPADES = "♠";
+    private static final String HEARTS = "♥";
+    private static final String DIAMONDS = "♦";
+    private static final String CLUBS = "♣";
 
 
     public void displayMainMenu() {
@@ -18,7 +22,8 @@ public class Graphics {
                 /____/\\__,_/_/ /_/|__/|__/\\__,_/\\__, /    |___/\\___/\\__, /\\__,_/____/ \s
                                                /____/              /____/             \s
                 """);
-        //https://patorjk.com/software/taag/#p=display&f=Slant&t=sunway+vegas&x=none&v=4&h=4&w=80&we=false
+        // Ascii art source here
+        // https://patorjk.com/software/taag/#p=display&f=Slant&t=sunway+vegas&x=none&v=4&h=4&w=80&we=false
 
         System.out.print("""
                 Pick an option:
@@ -69,8 +74,8 @@ public class Graphics {
         System.out.print("How many decks do you want?");
     }
 
-    public void displayDeckAmountMenu(int deck_amount) {
-        System.out.println("Deck amount is now " + deck_amount);
+    public void displayDeckAmountMenu(int deckAmount) {
+        System.out.println("Deck amount is now " + deckAmount);
     }
 
     public void displayDealerHit17Menu() {
@@ -81,15 +86,15 @@ public class Graphics {
                 """);
     }
 
-    public void displayDealerHit17Menu(boolean dealer_hit) {
-        if (dealer_hit) {
+    public void displayDealerHit17Menu(boolean dealerHit) {
+        if (dealerHit) {
             System.out.println("Dealer hit on soft 17 is now enabled");
         } else {
             System.out.println("Dealer hit on soft 17 is now disabled");
         }
     }
 
-    public void playerNameInput() {
+    public void promptPlayerName() {
         System.out.println("Enter your name (max 20 characters long):");
     }
 
@@ -99,20 +104,13 @@ public class Graphics {
 
             String symbol = suit;
 
-            switch (suit) {
-                case "spades":
-                    symbol = SPADES;
-                    break;
-                case "heart":
-                    symbol = HEART;
-                    break;
-                case "diamond":
-                    symbol = DIAMOND;
-                    break;
-                case "clubs":
-                    symbol = CLUBS;
-                    break;
-            }
+            symbol = switch (suit) {
+                case "spades" -> SPADES;
+                case "hearts" -> HEARTS;
+                case "diamonds" -> DIAMONDS;
+                case "clubs" -> CLUBS;
+                default -> symbol;
+            }; // this is basically switch catch but newer.
 
             return String.format("[ %s %s ]", rank, symbol);
 
@@ -136,9 +134,10 @@ public class Graphics {
                 hasHiddenCards = true;
             }
         }
-        if (hasHiddenCards) {
+        if (hasHiddenCards) { //
             System.out.println(" (Total: ?)");
-        } else System.out.printf(" (Total: %s)\n", score);
+        }
+        else System.out.printf(" (Total: %s)\n", score);
     }
 
     public void declareWinner(int playerScore, boolean playerBusted, int dealerScore, boolean dealerBusted, String playerName) {
