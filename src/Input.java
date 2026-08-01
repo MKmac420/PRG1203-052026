@@ -1,17 +1,17 @@
 import java.util.Scanner;
 
-/* TODO
-a more proper input detection system
-*/
 
 public class Input {
-    private Scanner player_input = new Scanner(System.in);
+    private Scanner playerInput = new Scanner(System.in);
 
+    /*
+    the main goal of this class is to accept and verify input safely
+     */
 
     public int readInt() {
         while (true) {
             try {
-                return Integer.parseInt(player_input.nextLine().trim()); // return a valid value only
+                return Integer.parseInt(playerInput.nextLine().trim());
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input! Please enter a number.");
             }
@@ -22,11 +22,11 @@ public class Input {
         while (true) {
             int selection = readInt();
 
-            if (selection > 0 && selection <= maximum) { // selection can only be between 1 and max
+            if (selection > 0 && selection <= maximum) {
                 return selection;
             }
             else {
-                System.out.printf("Invalid input! Please pick between 1 to %d only", maximum);
+                System.out.printf("Invalid input! Please pick between 1 to %d only\n", maximum);
             }
         }
     }
@@ -34,9 +34,12 @@ public class Input {
     public String readString() {
         String input;
         while (true) {
-            input = player_input.nextLine().trim(); // remove whitespaces if any
-            if (!input.isEmpty()) { // no empty input
-                input = input.substring(0, Math.min(input.length(), 20)); // truncates to only 20 chars
+            input = playerInput.nextLine().trim();
+            if (!input.isEmpty()) {
+                // this line compares what the user typed with 20
+                // it will then pick whichever is shorter
+                // it will then return each char from index 0 to math.min OR until index 19
+                input = input.substring(0, Math.min(input.length(), 20));
                 return input;
             }
             System.out.println("Input cannot be empty! Please enter something!");
@@ -45,6 +48,6 @@ public class Input {
     }
 
     public void promptEnter() {
-        player_input.nextLine();
-    }
+        playerInput.nextLine();
+    } // press enter to continue
 }
