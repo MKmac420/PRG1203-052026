@@ -1,22 +1,22 @@
 import java.util.ArrayList;
 import java.util.List;
 
-/*
-EVERY SINGLE PRINT STATEMENT IN HERE IS FOR TESTING ONLY.
-ONLY GRAPHICS.JAVA CAN HANDLE OUTPUT
- */
-
 
 public class GameEngine {
+
+    /*
+    the main goal of this class is the handle the menu and gameplay loop
+     */
+
     private List<Participant> participants;
     private Deck deck;
     private HouseRules rules;
 
-    private int deck_amount = 4; // default if user doesnt set
-    private boolean dealerhit17 = false; // also default
+    private int deckAmount = 4; // default if user doesnt set
+    private boolean dealerHit17 = false; // also default
 
-    Graphics GUI = new Graphics();
-    Input Input = new Input();
+    Graphics gui = new Graphics();
+    Input input = new Input();
 
 
     public GameEngine() {
@@ -33,96 +33,77 @@ public class GameEngine {
 
     // private methods ######################
 
-    private void mainMenu() { // this is the main menu
-        int selection = 0;
+    private void mainMenu() {
+        int selection;
 
-        while (selection != -1) {
-            GUI.displayMainMenu();
-            selection = Input.readInt(4);
+        while (true) {
+            gui.displayMainMenu();
+            selection = input.readInt(4);
 
             switch (selection) {
-                case 1:
-                    System.out.println("case 1");
-                    Start();
-                    break;
-                case 2:
-                    System.out.println("case 2");
-                    optionsMenu();
-                    break;
-                case 3:
-                    System.out.println("case 3");
-                    helpMenu();
-                    break;
-                case 4:
-                    System.out.println("case 4");
-                    selection = -1;
-                    break;
-                default:
-                    System.out.println("default case");
-                    break;
+                case 1 -> start();
+                case 2 -> optionsMenu();
+                case 3 -> helpMenu();
+                case 4 -> {
+                    return;
+                }
             }
         }
     }
 
-    private void optionsMenu() { // this is the options menu
+    private void optionsMenu() {
         int selection = 0;
-        while (selection != -1) {
-            GUI.displayOptionsMenu();
-            selection = Input.readInt(3);
+        while (true) {
+            gui.displayOptionsMenu();
+            selection = input.readInt(3);
 
             switch (selection) {
-                case 1:
-                    System.out.println("case 1");
-                    deckAmount();
-                    break;
-                case 2:
-                    System.out.println("case 2");
-                    dealerHit17();
-                    break;
-                case 3:
-                    System.out.println("case 3");
-                    this.rules = new HouseRules(deck_amount, dealerhit17);
-                    selection = -1;
-                    break;
+                case 1 -> configDeckAmount();
+                case 2 -> configDealerHit17();
+                case 3 -> {
+                    rules = new HouseRules(deckAmount, dealerHit17);
+                    return;
+                } //saves changes and exits
             }
+
         }
     }
 
     private void helpMenu() { // all the help will be stored here
-        GUI.displayHelpMenu();
-        Input.promptEnter();
+        gui.displayHelpMenu();
+        input.promptEnter();
     }
 
-    private void deckAmount() { // this menu changes the deck amount house rule
-        GUI.displayDeckAmountMenu();
-        deck_amount = Input.readInt();
-        GUI.displayDeckAmountMenu(deck_amount);
+    private void configDeckAmount() { // this menu changes the deck amount house rule
+        gui.displayDeckAmountMenu();
+        deckAmount = input.readInt();
+        gui.displayDeckAmountMenu(deckAmount);
     }
 
-    private void dealerHit17() { // this menu changes whether the dealer hits on a soft 17 or not
+    private void configDealerHit17() { // this menu changes whether the dealer hits on a soft 17 or not
         int selection;
-        GUI.displayDealerHit17Menu();
-        selection = Input.readInt(2);
+        gui.displayDealerHit17Menu();
+        selection = input.readInt(2);
         if (selection == 1) { // dealer will hit at soft 17
             //rules.isHitSoft17(true);
-            this.dealerhit17 = true;
-            GUI.displayDealerHit17Menu(dealerhit17);
+            this.dealerHit17 = true;
+            gui.displayDealerHit17Menu(dealerHit17);
 
         } else if (selection == 2) { // dealer will NOT hit at soft 17
             //rules.isHitSoft17(false);
-            this.dealerhit17 = false;
-            GUI.displayDealerHit17Menu(dealerhit17);
+            this.dealerHit17 = false;
+            gui.displayDealerHit17Menu(dealerHit17);
 
         }
     }
 
     private void displayParticipantHand(Participant p) {
-        GUI.displayHand(p.getName(), p.getHand().getCards(), p.getHand().getScore());
+        gui.displayHand(p.getName(), p.getHand().getCards(), p.getHand().getScore());
     }
 
 
-    private void Start() { // this is the actual gamplay loop
-        Boolean playing =  true;
+    private void start() { // this is the actual gamplay loop
+        boolean playing =  true;
 
         participants.clear();
 
@@ -130,17 +111,17 @@ public class GameEngine {
         deck.shuffle();
 
 
-        GUI.playerNameInput();
-        participants.add(new Player(Input.readString()));
+        gui.promptPlayerName();
+        participants.add(new Player(input.readString()));
 
         participants.add(new Dealer("Dealer")); // dealer is always last
 
 
         while (playing) {
             playRound();
-            GUI.keepPlaying();
+            gui.keepPlaying();
 
-            if (Input.readInt(2) == 2) {
+            if (input.readInt(2) == 2) {
                 playing = false;
             }
         }
@@ -148,7 +129,7 @@ public class GameEngine {
 
     }
 
-    public void playRound() { //t temp
+    public void playRound() {
         if (deck.isEmpty()) {
             deck.initialize(rules.getNumberOfDecks());
             deck.shuffle();
@@ -182,7 +163,7 @@ public class GameEngine {
 
     }
 
-    public void resolveWinner() { // temp
+    public void resolveWinner() {
         Participant dealer = participants.getLast(); // dealer is always last
 
         for (Card card : dealer.getHand().getCards()) {
@@ -199,7 +180,7 @@ public class GameEngine {
                 boolean playerBusted = p.getHand().isBusted();
 
 
-                GUI.declareWinner(playerScore, playerBusted, dealerScore, dealerBusted, p.getName());
+                gui.declareWinner(playerScore, playerBusted, dealerScore, dealerBusted, p.getName());
             }
         }
     }
