@@ -35,7 +35,7 @@ public class Input {
         while (true) {
             int selection = readInt();
 
-            if (selection >= minimum || selection <= maximum) {
+            if (selection >= minimum && selection <= maximum) {
                 return selection;
             }
             else {
