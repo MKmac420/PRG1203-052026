@@ -3,16 +3,18 @@ import java.util.Collections;
 import java.util.List;
 
 public class Deck {
- 
-    private List<Card> cards;
 
-   
+    private List<Card> cards;
+    private int numberOfDecks;
+
     public Deck() {
         this.cards = new ArrayList<>();
+        this.numberOfDecks = 1;
     }
 
     // Generates 52 cards multiplied by numberOfDecks
     public void initialize(int numberOfDecks) {
+        this.numberOfDecks = numberOfDecks; // Remembers how many decks were selected
         cards.clear(); // Clear existing cards before rebuilding
 
         String[] suits = {"Hearts", "Diamonds", "Clubs", "Spades"};
@@ -33,12 +35,14 @@ public class Deck {
         Collections.shuffle(cards);
     }
 
-    // Deals the top card from the deck
+    // Deals the top card from the deck, auto-reshuffling if empty
     public Card dealCard() {
         if (isEmpty()) {
-            return null; // Check if deck is out of cards
+            System.out.println("\n[Deck empty. Reshuffling.]\n");
+            initialize(this.numberOfDecks);
+            shuffle();
         }
-        return cards.remove(0); // Removes and returns card at index 0 (top of deck)
+        return cards.remove(0); // Removes and returns card at index 0
     }
 
     // Checks if the deck is empty
