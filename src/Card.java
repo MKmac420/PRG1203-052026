@@ -4,6 +4,7 @@ public class Card {
 	private String suit;
 	private String rank;
 	private boolean isHidden;
+
 	
 	//Constructor
 	public Card(String suit, String rank) {
@@ -12,8 +13,14 @@ public class Card {
 		this.isHidden = false; //Allows the cards to start face up by default
 	}
 	
+	
+	public String getSuit() {
+		return suit;
+	}
+	
+	
 	public String getRank() {
-		return suit == null ? "" : rank; //Returns the suit of the card.
+		return rank; //Returns the rank of the card.
 	}
 	
 	//Handles the point values for cards
@@ -52,3 +59,4 @@ public class Card {
         return rank + " of " + suit;
     }
 }
+
