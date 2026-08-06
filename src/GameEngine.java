@@ -133,7 +133,6 @@ public class GameEngine {
         if (deck.isEmpty()) {
             deck.initialize(rules.getNumberOfDecks());
             deck.shuffle();
-
         }
         for (Participant p : participants) {
             p.reset();
@@ -143,7 +142,7 @@ public class GameEngine {
             for (Participant p : participants) {
                 Card card = deck.dealCard();
 
-                if (p.isDealer() && round == 1) {
+                if (p instanceof Dealer && round == 1) {
                     card.setHidden(true);
                 }
 
@@ -156,11 +155,15 @@ public class GameEngine {
         }
 
         for (Participant p : participants) {
-            p.playTurn(deck, rules);
+            if (p instanceof Player player) {
+                player.playTurn(deck, rules);
+
+            } else if (p instanceof Dealer dealer) {
+                dealer.playTurn(deck, rules);
+            }
         }
 
-        resolveWinner(); // checks if anyone won or not
-
+        resolveWinner();
     }
 
     public void resolveWinner() {
