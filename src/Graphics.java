@@ -105,10 +105,10 @@ public class Graphics {
             String symbol = suit;
 
             symbol = switch (suit) {
-                case "spades" -> SPADES;
-                case "hearts" -> HEARTS;
-                case "diamonds" -> DIAMONDS;
-                case "clubs" -> CLUBS;
+                case "Spades" -> SPADES;
+                case "Hearts" -> HEARTS;
+                case "Diamonds" -> DIAMONDS;
+                case "Clubs" -> CLUBS;
                 default -> symbol;
             }; // this is basically switch catch but newer.
 
