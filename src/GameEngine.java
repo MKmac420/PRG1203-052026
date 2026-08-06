@@ -76,7 +76,7 @@ public class GameEngine {
 
     private void configDeckAmount() { // this menu changes the deck amount house rule
         gui.displayDeckAmountMenu();
-        deckAmount = input.readInt();
+        deckAmount = input.readInt(1, 1000);
         gui.displayDeckAmountMenu(deckAmount);
     }
 
