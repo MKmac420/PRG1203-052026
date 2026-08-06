@@ -13,7 +13,7 @@ public class Input {
             try {
                 return Integer.parseInt(playerInput.nextLine().trim());
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input! Please enter a number.");
+                System.out.println("Invalid input! Please enter a valid number.");
             }
         }
     }
@@ -27,6 +27,19 @@ public class Input {
             }
             else {
                 System.out.printf("Invalid input! Please pick between 1 to %d only\n", maximum);
+            }
+        }
+    }
+
+    public int readInt(int minimum, int maximum) {
+        while (true) {
+            int selection = readInt();
+
+            if (selection >= minimum || selection <= maximum) {
+                return selection;
+            }
+            else {
+                System.out.printf("Invalid input! Please pick between %d to %d only\n", minimum, maximum);
             }
         }
     }
