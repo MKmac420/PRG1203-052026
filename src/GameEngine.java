@@ -129,7 +129,7 @@ public class GameEngine {
 
     }
 
-    public void playRound() {
+    private void playRound() {
         if (deck.isEmpty()) {
             deck.initialize(rules.getNumberOfDecks());
             deck.shuffle();
@@ -166,7 +166,7 @@ public class GameEngine {
         resolveWinner();
     }
 
-    public void resolveWinner() {
+    private void resolveWinner() {
         Participant dealer = participants.getLast(); // dealer is always last
 
         for (Card card : dealer.getHand().getCards()) {
